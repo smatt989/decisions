@@ -157,8 +157,8 @@ class ResponseRequestCreator extends Actor {
       //.property(Email.RECIPIENTS, "matthew.slotkin@gmail.com")
       .property(Email.SUBJECT, "Answer a question!")
       .property(Email.HTMLPART, questionTemplate)
-      .property(Email.FROMEMAIL, "matthew.slotkin@gmail.com")
-      .property(Email.FROMNAME, "Matty Slots")
+      .property(Email.FROMEMAIL, "scheduledq@gmail.com")
+      .property(Email.FROMNAME, "ScheduledQ")
       .property(Email.RECIPIENTS, new JSONArray()
         .put(new JSONObject()
           .put("Email", user.email)));
