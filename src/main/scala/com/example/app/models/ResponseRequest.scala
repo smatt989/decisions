@@ -144,10 +144,12 @@ class ResponseRequestCreator extends Actor {
   def sendEmail(question: QuestionsRow, choices: Seq[ChoicesRow], user: UserJson) = {
 
 
+    val domain = sys.env.get("DOMAIN").getOrElse(s"http://localhost:9000/")
+
     val questionTemplate = {
       question.questionText+"\n"+
       choices.sortBy(_.choiceOrder).map(choice => {
-        "<a href='http://localhost:9000/#/questions/"+question.questionId+"/response/"+choice.choiceId+"'>"+choice.choiceText+"</a>"
+        "<a href='"+domain+"#/questions/"+question.questionId+"/response/"+choice.choiceId+"'>"+choice.choiceText+"</a>"
       }).mkString("\n")
     }
 
