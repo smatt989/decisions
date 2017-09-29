@@ -27,8 +27,8 @@ export default class App extends React.Component {
           <Route exact path="/login" component={LoginContainer}/>
           <Route exact path="/register" component={RegisterContainer}/>
           <Route exact path="/recover" component={LoginContainer}/>
-          <Route exact path="/questions" component={Questions}/>
-          <Route exact path="/questions/new" component={NewQuestionContainer} />
+          <PrivateRouteContainer exact path="/questions" component={Questions}/>
+          <PrivateRouteContainer exact path="/questions/new" component={NewQuestionContainer} />
           <PrivateRouteContainer path="/questions/:id/response/:choice" component={ResponsePageContainer} />
           <PrivateRouteContainer path="/questions/:id/edit" component={EditQuestionContainer} />
           <PrivateRouteContainer path="/questions/:id" component={QuestionViewContainer} />

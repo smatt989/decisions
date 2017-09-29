@@ -12,6 +12,7 @@ import { getResponses, getResponsesSuccess, getResponsesError } from '../../acti
 import {dispatchPattern} from '../../utilities.js';
 import { Redirect, Link } from 'react-router-dom';
 import {HighchartsChart, Chart, Title, Subtitle, Legend, XAxis, YAxis, LineSeries} from 'react-jsx-highcharts';
+import Highcharts from 'highcharts';
 
 class Responses extends React.Component {
 
@@ -54,10 +55,12 @@ class Responses extends React.Component {
         yMax = 2
     }
 
+    Highcharts.setOptions({global: {useUTC: false}});
+
     return <div>
-                <HighchartsChart plotOptions={plotOptions}>
-                  <Chart />
-                  <XAxis type="datetime">
+                <HighchartsChart plotOptions={plotOptions} useUTC={false}>
+                  <Chart setOptions={{global: {useUTC: false}}} />
+                  <XAxis type="datetime" >
                     <XAxis.Title >Time</XAxis.Title>
                   </XAxis>
                   <YAxis id="number" min={yMin} max={yMax}>

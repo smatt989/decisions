@@ -40,7 +40,7 @@ class Login extends React.Component {
 
     return (
       <div className='sign-in full-screen-page'>
-        <NavBar inverse={true} />
+        <NavBar inverse={false} />
         <div className='col-md-push-4 col-md-4 content-block-inverse'>
           <h1 className='m-t-3 m-b-3'>Log In</h1>
           <form role='form' onSubmit={this.onSubmit}>

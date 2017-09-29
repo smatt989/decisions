@@ -7,13 +7,13 @@ import NavBar from './NavBar.jsx';
 export default class Home extends React.Component {
   render() {
     return <div className="landing full-screen-page">
-        <NavBar inverse={true} />
+        <NavBar inverse={false} />
         <div className='container'>
           <div className="jumbotron jumbotron-home text-xs-center">
               <div className='row'>
                 <div className='col-md-12'>
-                  <h1>Knowledge Acquisition</h1>
-                  <h3>Efficiently and Intelligently Collect Expert Annotations</h3>
+                  <h1>See Yourself From Above</h1>
+                  <h3>Get out of your head and see how you feel through time</h3>
                 </div>
               </div>
               <div className='row m-t-2'>

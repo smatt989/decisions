@@ -35,12 +35,12 @@ class Register extends React.Component {
     const { from } = this.props.location.state || { from: { pathname: '/' } }
 
     if (this.state.redirectToReferrer) {
-      return <Redirect to={'/tasks'} />;
+      return <Redirect to={'/questions'} />;
     }
 
     return (
       <div className='sign-up full-screen-page'>
-        <NavBar inverse={true} />
+        <NavBar inverse={false} />
         <div className='col-md-push-4 col-md-4 content-block-inverse'>
           <h1 className='m-t-3 m-b-3'>Sign Up</h1>
           <form role='form' onSubmit={e => this.onSubmit(e)}>
