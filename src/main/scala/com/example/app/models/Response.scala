@@ -24,7 +24,6 @@ object Response extends UpdatableUUIDObject[ResponsesRow, Responses] {
   def idColumnFromTable(a: _root_.com.example.app.db.Tables.Responses) =
     a.responseId
 
-  def byQuestionId(questionId: String) = {
+  def byQuestionId(questionId: String) =
     db.run(table.filter(_.questionId === questionId).result)
-  }
 }

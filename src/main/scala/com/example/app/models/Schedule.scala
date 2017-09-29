@@ -34,8 +34,17 @@ object Schedule extends UpdatableUUIDObject[SchedulesRow, Schedules] {
     val periodMillis = PeriodType.periodMillis(PeriodType.byName(schedule.period))
     val averageInterval = periodMillis.toDouble / schedule.frequency
 
+    val noiseMultiplier = math.min(
+      math.max(
+        scala.util.Random.nextGaussian() * 0.25 + 1,
+        0.25),
+      1.75)
+
+    println("noise multiplier: "+noiseMultiplier)
+    println("average interval: "+averageInterval)
+
     val lastCompletedRequestResponse = Await.result(ResponseRequest.lastCompletedRequestResponse(schedule.questionId), Duration.Inf)
 
-    lastCompletedRequestResponse.map(_.createdMillis).getOrElse(new DateTime().getMillis) + averageInterval
+    lastCompletedRequestResponse.map(_.createdMillis).getOrElse(new DateTime().getMillis) + (averageInterval * noiseMultiplier)
   }
 }

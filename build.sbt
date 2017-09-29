@@ -50,7 +50,8 @@ lazy val project = Project (
       "com.relayrides" % "pushy" % "0.9.2",
       "com.amazonaws" % "aws-java-sdk" % "1.11.46",
       "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-      "com.typesafe.slick" %% "slick-codegen" % SlickVersion
+      "com.typesafe.slick" %% "slick-codegen" % SlickVersion,
+      "com.mailjet" % "mailjet-client" % "4.0.5"
     ),
     scalacOptions := Seq("-feature"),
     mainClass in Compile := Some("JettyLauncher"),

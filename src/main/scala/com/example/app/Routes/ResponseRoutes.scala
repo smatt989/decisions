@@ -22,6 +22,12 @@ trait ResponseRoutes extends SlickRoutes with AuthenticationSupport {
 
     var toCreate = parsedBody.extract[ResponseContracts.Input].response(questionId)
 
+    val requestHasResponse = ResponseRequest.checkRequestAlreadyHasResponse(toCreate.responseId)
+
+    if(requestHasResponse) {
+      toCreate = toCreate.copy(responseRequestId = None)
+    }
+
     if(Question.authorizedToEdit(userId, questionId)) {
 
       if(toCreate.responseRequestId.isEmpty) {

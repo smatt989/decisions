@@ -2,7 +2,7 @@ package com.example.app.Routes
 
 import com.example.app.{AuthenticationSupport, SlickRoutes}
 import com.example.app.contracts.QuestionContracts
-import com.example.app.models.{Question, ResponseRequest}
+import com.example.app.models.{Question, QuestionType, ResponseRequest}
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -54,5 +54,11 @@ trait QuestionRoutes extends SlickRoutes with AuthenticationSupport {
       Question.questionWithChoices(questionId)
     } else
       throw new Exception("No authorized to view this question")
+  }
+
+  get("/questiontypes") {
+    contentType = formats("json")
+
+    QuestionType.all
   }
 }

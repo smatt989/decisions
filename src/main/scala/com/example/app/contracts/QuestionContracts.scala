@@ -9,7 +9,7 @@ import org.joda.time.DateTime
   */
 object QuestionContracts {
 
-  case class Input(questionId: String = null, questionType: String, text: String, isActive: Boolean = true, expirationMillis: Option[Long]){
+  case class Input(questionId: String = null, questionType: String, text: String, isActive: Boolean = true, expirationMillis: Option[Long] = None){
     require( QuestionType.valid(questionType), "must use a valid question type: "+QuestionType.all.map(_.name).mkString(", "))
     def question(creatorId: Int) = QuestionsRow(questionId, creatorId, questionType, text, isActive, expirationMillis, DateTime.now().getMillis)
   }

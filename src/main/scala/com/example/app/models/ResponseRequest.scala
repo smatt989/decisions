@@ -1,11 +1,16 @@
 package com.example.app.models
 
 import com.example.app.{AppGlobals, SlickUUIDObject, UpdatableUUIDObject}
-import com.example.app.db.Tables.{ResponseRequests, ResponseRequestsRow}
+import com.example.app.db.Tables.{ChoicesRow, QuestionsRow, ResponseRequests, ResponseRequestsRow}
 import com.example.app.models.Question
 import akka.actor.{Actor, ActorSystem, Props}
 import org.joda.time.DateTime
 import AppGlobals.dbConfig.driver.api._
+import com.example.app.contracts.QuestionContracts
+import com.example.app.contracts.QuestionContracts.QuestionWithChoices
+import com.mailjet.client.resource.Email
+import com.mailjet.client.{MailjetClient, MailjetRequest}
+import org.json.{JSONArray, JSONObject}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -48,6 +53,9 @@ object ResponseRequest extends UpdatableUUIDObject[ResponseRequestsRow, Response
         responses <- Response.table if responses.responseRequestId === responseRequests.responseRequestId
       } yield (responses)).sortBy(_.createdMillis.desc).take(1).result.headOption
     )
+
+  def checkRequestAlreadyHasResponse(requestId: String) =
+    Await.result(db.run(Response.table.filter(_.responseRequestId === requestId).result), Duration.Inf).size > 0
 
   def toFire = {
     println("firing...?")
@@ -108,15 +116,55 @@ object ResponseRequest extends UpdatableUUIDObject[ResponseRequestsRow, Response
 
 class ResponseRequestCreator extends Actor {
 
+  val mailjetClient = new MailjetClient(System.getenv("MAIL_JET_PUBLIC_KEY"), System.getenv("MAIL_JET_SECRET_KEY"))
+
   def receive = {
     case "go" =>
       println("pinging db...")
       val requests = ResponseRequest.toFire
       println(requests.size + " requests...")
-      requests.map(ResponseRequest.sendResponseRequest)
+      requests.map(sendResponseRequest)
       println("requests saved")
     case _ => println("ouch!")
   }
 
+  def sendResponseRequest(responseRequest: ResponseRequestsRow) {
+
+    val question = Await.result(Question.byId(responseRequest.questionId), Duration.Inf)
+    val choices = Await.result(Choice.byQuestionId(question.questionId), Duration.Inf)
+
+    val user = User.makeJson(Await.result(User.byId(question.creatorId), Duration.Inf))
+
+    ResponseRequest.sendResponseRequest(responseRequest)
+    sendEmail(question, choices, user)
+  }
+
+  //def notify
+
+  def sendEmail(question: QuestionsRow, choices: Seq[ChoicesRow], user: UserJson) = {
+
+
+    val questionTemplate = {
+      question.questionText+"\n"+
+      choices.sortBy(_.choiceOrder).map(choice => {
+        "<a href='http://localhost:9000/#/questions/"+question.questionId+"/response/"+choice.choiceId+"'>"+choice.choiceText+"</a>"
+      }).mkString("\n")
+    }
+
+    val request = new MailjetRequest(Email.resource)
+      //.property(Email.RECIPIENTS, "matthew.slotkin@gmail.com")
+      .property(Email.SUBJECT, "Answer a question!")
+      .property(Email.HTMLPART, questionTemplate)
+      .property(Email.FROMEMAIL, "matthew.slotkin@gmail.com")
+      .property(Email.FROMNAME, "Matty Slots")
+      .property(Email.RECIPIENTS, new JSONArray()
+        .put(new JSONObject()
+          .put("Email", user.email)));
+
+    println("sending")
+    val response = mailjetClient.post(request)
+    System.out.println(response.getData());
+    println("sent")
+  }
 }
 

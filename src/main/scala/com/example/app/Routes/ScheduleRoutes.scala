@@ -1,7 +1,7 @@
 package com.example.app.Routes
 
 import com.example.app.contracts.ScheduleContracts
-import com.example.app.models.{Question, ResponseRequest, Schedule}
+import com.example.app.models.{PeriodType, Question, ResponseRequest, Schedule}
 import com.example.app.{AuthenticationSupport, SlickRoutes}
 
 import scala.concurrent.Await
@@ -43,5 +43,11 @@ trait ScheduleRoutes extends SlickRoutes with AuthenticationSupport {
       schedule.map(ScheduleContracts.serialize)
     } else
       throw new Exception("Not authorized to view this question")
+  }
+
+  get("/periodtypes") {
+    contentType = formats("json")
+
+    PeriodType.all
   }
 }
