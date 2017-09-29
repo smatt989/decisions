@@ -13,7 +13,7 @@ export default class Home extends React.Component {
               <div className='row'>
                 <div className='col-md-12'>
                   <h1>See Yourself From Above</h1>
-                  <h3>Get out of your head and see how you feel through time</h3>
+                  <h3>Get out of your head and understand yourself</h3>
                 </div>
               </div>
               <div className='row m-t-2'>
@@ -21,6 +21,20 @@ export default class Home extends React.Component {
                   <Link to="/register">
                     <Button bsStyle="success">Create Account</Button>
                   </Link>
+                </div>
+              </div>
+              <br />
+              <br />
+              <br />
+              <div className='m-t-5'>
+                <div className='col-md-4'>
+                    <h3>1. Submit a question with a schedule</h3>
+                </div>
+                <div className='col-md-4'>
+                    <h3>2. Emails notify you when it's time to respond</h3>
+                </div>
+                <div className='col-md-4'>
+                    <h3>3. See how you feel over time</h3>
                 </div>
               </div>
           </div>
