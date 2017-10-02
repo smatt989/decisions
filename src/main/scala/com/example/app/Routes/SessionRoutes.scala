@@ -5,11 +5,6 @@ import com.example.app.{AuthenticationSupport, SlickRoutes}
 
 trait SessionRoutes extends SlickRoutes with AuthenticationSupport{
 
-  get("/sessions") {
-    contentType = formats("json")
-    UserSession.getAll
-  }
-
   get("/sessions/new"){
     contentType = formats("json")
     authenticate()

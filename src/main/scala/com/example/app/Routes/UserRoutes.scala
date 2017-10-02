@@ -66,10 +66,6 @@ trait UserRoutes extends SlickRoutes with AuthenticationSupport{
     } yield (r diff s)
   }
 
-  get("/users") {
-    User.getAll.map(_.map(User.makeJson))
-  }
-
   post("/users/tokens"){
     contentType = formats("json")
     authenticate()
