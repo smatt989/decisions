@@ -1,4 +1,4 @@
-# Bee Label Maker #
+# Simple Decisions #
 
 This is a simple webapp to repeatedly poll your responses to questions built using scalatra with a connection to Postgres/H2 db with Slick and serving up a react/redux web front end.  Maijet is used to send emails.
 
