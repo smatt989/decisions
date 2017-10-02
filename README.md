@@ -1,6 +1,6 @@
 # Bee Label Maker #
 
-This is image annotation software built using scalatra with a connection to Postgres/H2 db with Slick and serving up a react/redux web front end.
+This is a simple webapp to repeatedly poll your responses to questions built using scalatra with a connection to Postgres/H2 db with Slick and serving up a react/redux web front end.  Maijet is used to send emails.
 
 ## Initial Setup
 
@@ -9,7 +9,7 @@ https://github.com/smatt989/bee/wiki/Initial-Setup
 ## Build & Run ##
 
 ```sh
-$ cd bee
+$ cd decisions
 $ ./sbt
 > jetty:start
 > browse
@@ -22,7 +22,7 @@ For first time use, to create the db schema, run the following:
 
 This command will:
 1. Check to see if DB has already been initialized
-2. If not, it will create the schema "BEE", and the basic migrations tables
+2. If not, it will create the schema "DECISIONS", and the basic migrations tables
 3. Check which migration scripts have already been applied
 4. Apply any unapplied migration scripts
 
@@ -31,7 +31,7 @@ This command will:
 For development you can have the web server recompile and restart after every code change by using the following code snippit:
 
 ```sh
-$ cd bee
+$ cd decisions
 $ ./sbt
 > ~;jetty:stop;jetty:start
 ```
