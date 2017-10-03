@@ -24,8 +24,8 @@ object PeriodType {
 
   def periodMillis(periodType: PeriodType) =
     periodType match {
-      case day => dayMillis
-      case week => weekMillis
-      case month => monthMillis
+      case PeriodType.day   =>  dayMillis
+      case PeriodType.week  =>  weekMillis
+      case PeriodType.month =>  monthMillis
     }
 }
