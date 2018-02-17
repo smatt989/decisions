@@ -10,8 +10,9 @@ object PeriodType {
   val day = PeriodType("day")
   val week = PeriodType("week")
   val month = PeriodType("month")
+  val year = PeriodType("year")
 
-  val all = Seq(day, week, month)
+  val all = Seq(day, week, month, year)
 
   def valid(name: String) =
     all.map(_.name).contains(name)
@@ -21,11 +22,13 @@ object PeriodType {
   val dayMillis = 1000 * 60 * 60 * 24
   val weekMillis = 7 * dayMillis
   val monthMillis = 30 * dayMillis
+  val yearMillis = 12 * monthMillis
 
   def periodMillis(periodType: PeriodType) =
     periodType match {
       case PeriodType.day   =>  dayMillis
       case PeriodType.week  =>  weekMillis
       case PeriodType.month =>  monthMillis
+      case PeriodType.year  =>  yearMillis
     }
 }
