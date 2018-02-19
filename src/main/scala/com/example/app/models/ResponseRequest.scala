@@ -93,8 +93,11 @@ object ResponseRequest extends UpdatableUUIDObject[ResponseRequestsRow, Response
 
     val schedules = qsAndSs.map(_._2).map(s => s.questionId -> s).toMap
 
+    //val timeCushion = (2 * Schedule.pureResponseRequest(schedules(request.questionId)))
+    val timeCushion = PeriodType.weekMillis
+
     unrespondedTo.filter(request => {
-      schedules.get(request.questionId).isDefined && request.sentOutMillis.get < (now - (2 * Schedule.pureResponseRequest(schedules(request.questionId))))
+      schedules.get(request.questionId).isDefined && request.sentOutMillis.get < (now - timeCushion)
     })
   }
 
