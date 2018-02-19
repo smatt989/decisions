@@ -136,7 +136,7 @@ object ResponseRequest extends UpdatableUUIDObject[ResponseRequestsRow, Response
 
   def startupResponseRequestCreator = {
     system.scheduler.schedule(0 milliseconds, 30 seconds, myActor, "go")
-    system.scheduler.schedule(0 milliseconds, 42 seconds, myActor, "remember")
+    system.scheduler.schedule(0 milliseconds, 1 hour, myActor, "remember")
   }
 }
 
