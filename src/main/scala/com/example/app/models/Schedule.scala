@@ -30,9 +30,11 @@ object Schedule extends UpdatableUUIDObject[SchedulesRow, Schedules] {
   def byQuestionId(questionId: String) =
     Await.result(db.run(table.filter(_.questionId === questionId).result), Duration.Inf).headOption
 
+  def byQuestionIds(questionIds: Seq[String]) =
+    Await.result(db.run(table.filter(_.questionId inSet questionIds).result), Duration.Inf)
+
   def nextResponseRequest(schedule: SchedulesRow) = {
-    val periodMillis = PeriodType.periodMillis(PeriodType.byName(schedule.period))
-    val averageInterval = periodMillis.toDouble / schedule.frequency
+    val averageInterval = pureResponseRequest(schedule)
 
     val noiseMultiplier = math.min(
       math.max(
@@ -46,5 +48,10 @@ object Schedule extends UpdatableUUIDObject[SchedulesRow, Schedules] {
     val lastCompletedRequestResponse = Await.result(ResponseRequest.lastCompletedRequestResponse(schedule.questionId), Duration.Inf)
 
     lastCompletedRequestResponse.map(_.createdMillis).getOrElse(new DateTime().getMillis) + (averageInterval * noiseMultiplier)
+  }
+
+  def pureResponseRequest(schedule: SchedulesRow) = {
+    val periodMillis = PeriodType.periodMillis(PeriodType.byName(schedule.period))
+    periodMillis.toDouble / schedule.frequency
   }
 }

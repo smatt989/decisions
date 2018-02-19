@@ -73,6 +73,31 @@ object ResponseRequest extends UpdatableUUIDObject[ResponseRequestsRow, Response
     requests.groupBy(_.questionId).mapValues(_.sortBy(_.scheduledForMillis).last).values.toSeq
   }
 
+  def toReschedule = {
+    val now = DateTime.now().getMillis
+
+    val unrespondedTo = Await.result(db.run(
+      (for {
+        (requests, responses) <- table.filter(rr => rr.sentOutMillis.isDefined) joinLeft Response.table on (_.responseRequestId === _.responseRequestId) if responses.isEmpty
+      } yield (requests)).result
+    ), Duration.Inf).groupBy(_.questionId).mapValues(_.sortBy(_.sentOutMillis).last).values.toSeq
+
+    val questionIds = unrespondedTo.map(_.questionId)
+
+    val qsAndSs = Await.result(db.run(
+      (for {
+        questions <- Question.table.filter(q => q.questionId.inSet(questionIds) && q.isActive && (q.expirationMillis.isEmpty || q.expirationMillis > now))
+        schedules <- Schedule.table if questions.questionId === schedules.questionId
+      } yield (questions, schedules) ).result
+    ), Duration.Inf)
+
+    val schedules = qsAndSs.map(_._2).map(s => s.questionId -> s).toMap
+
+    unrespondedTo.filter(request => {
+      schedules.get(request.questionId).isDefined && request.sentOutMillis.get < (now - (2 * Schedule.pureResponseRequest(schedules(request.questionId))))
+    })
+  }
+
   def sendResponseRequest(responseRequest: ResponseRequestsRow) = {
     val updated = responseRequest.copy(sentOutMillis = Some(new DateTime().getMillis))
     save(updated)
@@ -110,7 +135,8 @@ object ResponseRequest extends UpdatableUUIDObject[ResponseRequestsRow, Response
   val myActor = system.actorOf(Props[ResponseRequestCreator])
 
   def startupResponseRequestCreator = {
-    system.scheduler.schedule(0 milliseconds, 1000 * 5 milliseconds, myActor, "go")
+    system.scheduler.schedule(0 milliseconds, 30 seconds, myActor, "go")
+    system.scheduler.schedule(0 milliseconds, 30 minutes, myActor, "remember")
   }
 }
 
@@ -120,9 +146,13 @@ class ResponseRequestCreator extends Actor {
 
   def receive = {
     case "go" =>
-      println("pinging db...")
       val requests = ResponseRequest.toFire
       println(requests.size + " requests...")
+      requests.map(sendResponseRequest)
+      println("requests saved")
+    case "remember" =>
+      val requests = ResponseRequest.toReschedule
+      println(requests.size + " reminders...")
       requests.map(sendResponseRequest)
       println("requests saved")
     case _ => println("ouch!")
