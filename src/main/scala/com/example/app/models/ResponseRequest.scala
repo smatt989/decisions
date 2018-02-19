@@ -148,12 +148,12 @@ class ResponseRequestCreator extends Actor {
     case "go" =>
       val requests = ResponseRequest.toFire
       println(requests.size + " requests...")
-      requests.map(sendResponseRequest)
+      requests.foreach(sendResponseRequest)
       println("requests saved")
     case "remember" =>
       val requests = ResponseRequest.toReschedule
       println(requests.size + " reminders...")
-      requests.map(sendResponseRequest)
+      requests.foreach(sendResponseRequest)
       println("requests saved")
     case _ => println("ouch!")
   }
